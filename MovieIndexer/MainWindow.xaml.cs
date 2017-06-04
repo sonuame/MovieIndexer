@@ -37,7 +37,8 @@ namespace MovieIndexer
 
         private void btnUpdateDB_Click(object sender, RoutedEventArgs e)
         {
-            
+            Movies.Clear();
+
             foreach (ScanPath item in ScanPaths)
             {
                 Movies.AddRange(Directory.EnumerateDirectories(item.Path, "*.*", SearchOption.TopDirectoryOnly).Select(m=>new Movy() {
