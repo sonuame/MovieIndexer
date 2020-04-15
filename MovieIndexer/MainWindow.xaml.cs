@@ -1,36 +1,50 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace MovieIndexer
 {
+    public partial class Movie
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Path { get; set; }
+        public string Location { get; set; }
+    }
+    public partial class ScanPath
+    {
+        public int Id { get; set; }
+        public string Path { get; set; }
+        public string Location { get; set; }
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        mDatabaseEntities db = new mDatabaseEntities();
         List<ScanPath> ScanPaths = new List<ScanPath>();
-        List<Movy> Movies = new List<Movy>();
-        
+        List<Movie> Movies = new List<Movie>();
+
+        public string scanFile => Path.Combine(Directory.GetCurrentDirectory(), "scanPaths.txt");
+        public string movieFile => Path.Combine(Directory.GetCurrentDirectory(), "movies.json");
+
         public MainWindow()
         {
             InitializeComponent();
-            ScanPaths = db.ScanPaths.ToList();
+            if (File.Exists(this.scanFile))
+            {
+                var scanFile = File.ReadAllLines(this.scanFile);
+                ScanPaths = scanFile.Select(m => new ScanPath
+                {
+                    Location = m.Split(',')[1],
+                    Path = m.Split(',')[0]
+                }).ToList();
+            }
+
             grdMovies.AutoGenerateColumns = true;
             LoadGrid();
         }
@@ -38,20 +52,21 @@ namespace MovieIndexer
         private void btnUpdateDB_Click(object sender, RoutedEventArgs e)
         {
             Movies.Clear();
-
+            var _movies = new List<Movie>();
             foreach (ScanPath item in ScanPaths)
             {
-                Movies.AddRange(Directory.EnumerateDirectories(item.Path, "*.*", SearchOption.TopDirectoryOnly).Select(m=>new Movy() {
-                    Id = Movies.Count + 1, 
+                _movies.AddRange(Directory.EnumerateDirectories(item.Path, "*.*", SearchOption.TopDirectoryOnly).Select(m => new Movie()
+                {
+                    Id = Movies.Count + 1,
                     Location = item.Location,
                     Path = m,
-                    Title = System.IO.Path.GetFileNameWithoutExtension(m)
+                    Title = Path.GetFileNameWithoutExtension(m)
                 }));
             }
 
-            db.Movies.RemoveRange(db.Movies);
-            db.Movies.AddRange(Movies);
-            db.SaveChanges();
+            if (_movies.Count > 0) Movies.Clear();
+            Movies = _movies.Where(m => !m.Title.ToLower().Contains("recycle")).ToList();
+            File.WriteAllText(this.movieFile, JsonConvert.SerializeObject(Movies));
 
             LoadGrid();
 
@@ -62,11 +77,10 @@ namespace MovieIndexer
             lblStat.Content = "Total Movies - " + grdMovies.Items.Count;
         }
 
-        public async void LoadGrid()
+        public void LoadGrid()
         {
-            await Task<List<Movy>>.Run(() => {
-                Movies = db.Movies.ToList();
-            });
+            if (File.Exists(this.movieFile))
+                Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText(this.movieFile));
             grdMovies.ItemsSource = Movies;
             lblStat.Content = "Total Movies - " + grdMovies.Items.Count;
         }
@@ -75,13 +89,13 @@ namespace MovieIndexer
         {
             if (e.Key == Key.Enter)
             {
-                grdMovies.ItemsSource = Movies.Where(m=>m.Title.ToLower().Contains(txtTitle.Text.ToLower()));
+                grdMovies.ItemsSource = Movies.Where(m => m.Title.ToLower().Contains(txtTitle.Text.ToLower()));
             }
         }
 
         private void grdMovies_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Movy m = grdMovies.SelectedItem as Movy;
+            Movie m = grdMovies.SelectedItem as Movie;
             System.Diagnostics.Process.Start(m.Path);
         }
     }

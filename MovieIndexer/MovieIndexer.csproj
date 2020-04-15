@@ -49,13 +49,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>SignInKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>DC6E8AC7D7138F7CE53D5145AE5FE9C0C123B7ED</ManifestCertificateThumbprint>
@@ -67,11 +68,8 @@
     <ApplicationIcon>Hadezign-Hobbies-Movies.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -96,18 +94,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MovieContext.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MovieContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="MovieItem.cs" />
-    <Compile Include="Movy.cs">
-      <DependentUpon>MovieContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ScanPath.cs">
-      <DependentUpon>MovieContext.tt</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,16 +109,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MovieContext.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MovieContext.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="MovieContext.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MovieContext.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -149,43 +126,21 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="MovieContext.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MovieContext.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="MovieContext.edmx.diagram">
-      <DependentUpon>MovieContext.edmx</DependentUpon>
-    </None>
+    <None Include="movies.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="SignInKey.snk" />
-    <None Include="SunilKumar.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="scanPaths.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Hadezign-Hobbies-Movies.ico" />
-    <Content Include="mDatabase.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mDatabase_log.ldf">
-      <DependentUpon>mDatabase.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MovieContext.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MovieContext.edmx</DependentUpon>
-      <LastGenOutput>MovieContext.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="MovieContext.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MovieContext.edmx</DependentUpon>
-      <LastGenOutput>MovieContext.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
