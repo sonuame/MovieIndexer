@@ -51,7 +51,6 @@ namespace MovieIndexer
 
         private void btnUpdateDB_Click(object sender, RoutedEventArgs e)
         {
-            Movies.Clear();
             var _movies = new List<Movie>();
             foreach (ScanPath item in ScanPaths)
             {
