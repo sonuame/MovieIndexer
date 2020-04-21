@@ -142,7 +142,7 @@ namespace MovieIndexer
                     m.DateAdded = DateTime.Parse(m.DateAdded).ToString("dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
                 });
                 if (File.Exists(this.movieFile))
-                    File.Move(this.movieFile, this.movieFile + ".bak");
+                    File.Copy(this.movieFile, this.movieFile + ".bak", true);
                 File.WriteAllText(this.movieFile, JsonConvert.SerializeObject(Movies));
                 LoadGrid();
             }
